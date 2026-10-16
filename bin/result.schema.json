@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "flash-worker 交付格式",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["done", "blocked", "partial"],
+      "description": "done=按规格完成；blocked=规格不足/有歧义/被拒；partial=只完成了一部分"
+    },
+    "files_changed": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "实际改动的文件路径（相对工作区），没改就是空数组"
+    },
+    "summary": {
+      "type": "string",
+      "description": "一句话变更摘要（不超过 80 字）"
+    },
+    "unverified": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "未验证项 / 不确定点；没有就是空数组"
+    },
+    "blocked_reason": {
+      "type": "string",
+      "description": "status=blocked 时填缺什么信息/哪里歧义；其余情况填空字符串"
+    }
+  },
+  "required": ["status", "files_changed", "summary", "unverified", "blocked_reason"],
+  "additionalProperties": false
+}

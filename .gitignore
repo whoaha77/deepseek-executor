@@ -1,0 +1,16 @@
+worker-home/*
+!worker-home/config.example.toml
+logs/
+state/
+work/
+lessons/
+archives/
+backups/
+releases/
+__pycache__/
+*.pyc
+*.bak*
+.env
+.env.*
+*.key
+auth.json

@@ -1,0 +1,18 @@
+# Copy/configure locally; do not commit config.toml.
+model = "deepseek-flash"
+model_provider = "deepseek"
+model_reasoning_effort = "low"
+forced_login_method = "api"
+approval_policy = "never"
+sandbox_mode = "workspace-write"
+web_search = "disabled"
+project_doc_max_bytes = 0
+
+[windows]
+sandbox = "elevated"
+
+[model_providers.deepseek]
+name = "deepseek"
+base_url = "https://api.deepseek.com"
+wire_api = "responses"
+experimental_bearer_token = "YOUR_DEEPSEEK_API_KEY"

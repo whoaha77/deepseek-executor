@@ -1,0 +1,27 @@
+{
+  "max_parallel": 1,
+  "timeout_sec": 30,
+  "nodes": [
+    {
+      "id": "local-demo",
+      "backend": "local",
+      "workspace": ".",
+      "inputs": [],
+      "outputs": [
+        "work/demo.json"
+      ],
+      "argv": [
+        "python",
+        "-I",
+        "-c",
+        "from pathlib import Path;p=Path('work/demo.json');p.parent.mkdir(exist_ok=True);p.write_text('{}',encoding='utf-8')"
+      ],
+      "checks": [
+        {
+          "type": "json",
+          "path": "work/demo.json"
+        }
+      ]
+    }
+  ]
+}
