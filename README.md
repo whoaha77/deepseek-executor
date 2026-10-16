@@ -23,6 +23,8 @@ python -I install.py --configure
 ```powershell
 # 本地工具，无模型调用
 python -I bin/toolbox.py list
+# Python 代码按符号读取；不会执行源码
+python -I bin/code_context.py find --root bin --query load_key --limit 3
 # 纯文本调用（会产生你的 DeepSeek API 费用）
 python -I bin/ask.py "把这句话改短：这是一个示例。"
 # 看路由，不执行
@@ -34,6 +36,8 @@ python -I bin/team.py --plan examples/plan.json
 ```
 
 一个 worker 只接一个目标；实现和本地验证分开计时，共同受团队总截止约束。预算档位是估计起点，可以按任务覆盖并说明理由，不自动续时。主脑检查实际 diff 后再开启后续付费阶段。详见 [预算与阶段](docs/budgets.md)。
+
+需要读取较大 Python 文件或多份历史说明时，可使用 [本地上下文工具](docs/local-context.md)：先符号定位/索引检索，再取必要原文。索引仅收显式指定的 Markdown/TXT，普通小文件直接读取即可。工具不启动后台服务，也不调用模型；原文变化后拒绝使用过期摘录。
 
 ## 验证
 

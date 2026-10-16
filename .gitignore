@@ -9,6 +9,7 @@ backups/
 releases/
 __pycache__/
 *.pyc
+*.sqlite*
 *.bak*
 .env
 .env.*
