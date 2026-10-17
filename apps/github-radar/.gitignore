@@ -1,0 +1,14 @@
+# Local configuration and all runtime materials stay on the execution machine.
+config.json
+state/
+logs/
+work/
+output/
+backups/
+__pycache__/
+*.pyc
+.env
+*.key
+*.pem
+*.sqlite*
+*.db

@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "repository": "whoaha77/github-radar-reports",
+  "publish": true,
+  "model_enabled": true,
+  "daily_budget_cny": null,
+  "retention_days": 30,
+  "retention_min_reports": 10,
+  "boot_delay_minutes": 30,
+  "scan_interval_minutes": 120,
+  "run_timeout_seconds": 600,
+  "searches_per_scan": 6,
+  "results_per_query": 20,
+  "analysis_batch_size": 6,
+  "model_max_output_tokens": 10000,
+  "model_timeout_seconds": 75,
+  "report_top_n": 5,
+  "cooldown_days": 7,
+  "profile": "综合发现优质GitHub项目，优先科研与效率工具。关注文献、PDF、引用管理、数据处理、科研可视化、知识图谱、本体、AI与开发自动化；保留通用工具和新领域探索。运行环境为Windows。 也欢迎好玩、有趣、新奇、值得探索的项目与历史经典，不以是否可部署Codex作为分享门槛。",
+  "pricing": {
+    "source": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing",
+    "verified_date": "2026-10-16",
+    "max_age_days": 30,
+    "input_upper_cny_per_million": 2,
+    "output_upper_cny_per_million": 8,
+    "note": "按Flash高峰、全部输入未命中缓存计算预算占用；不是实际扣费。费率过期时停止新增付费调用。"
+  },
+  "queries": [
+    {
+      "category": "科研",
+      "q": "topic:scientific-computing stars:>50",
+      "sort": "stars"
+    },
+    {
+      "category": "效率",
+      "q": "topic:productivity stars:>200",
+      "sort": "stars"
+    },
+    {
+      "category": "科研",
+      "q": "\"reference manager\" in:description,readme stars:>30",
+      "sort": "stars"
+    },
+    {
+      "category": "效率",
+      "q": "topic:automation stars:>100",
+      "sort": "updated"
+    },
+    {
+      "category": "科研",
+      "q": "\"knowledge graph\" in:description stars:>50",
+      "sort": "stars"
+    },
+    {
+      "category": "探索",
+      "q": "created:>2026-09-01 stars:100..3000",
+      "sort": "stars"
+    },
+    {
+      "category": "科研",
+      "q": "topic:research-tools stars:>20",
+      "sort": "stars"
+    },
+    {
+      "category": "效率",
+      "q": "topic:pdf stars:>100",
+      "sort": "stars"
+    },
+    {
+      "category": "AI与开发",
+      "q": "\"agent skills\" in:description stars:>50",
+      "sort": "stars"
+    },
+    {
+      "category": "科研",
+      "q": "ontology in:description stars:>30",
+      "sort": "updated"
+    },
+    {
+      "category": "效率",
+      "q": "topic:document-processing stars:>50",
+      "sort": "stars"
+    },
+    {
+      "category": "探索",
+      "q": "topic:developer-tools stars:>500",
+      "sort": "updated"
+    },
+    {
+      "category": "经典回溯",
+      "q": "topic:visualization created:<{classic_before} stars:>100",
+      "sort": "stars"
+    },
+    {
+      "category": "经典回溯",
+      "q": "topic:automation created:<{classic_before} stars:>100",
+      "sort": "stars"
+    },
+    {
+      "category": "经典回溯",
+      "q": "topic:research-tools created:<{classic_before} stars:>20",
+      "sort": "stars"
+    },
+    {
+      "category": "趣味探索",
+      "q": "topic:creative-coding stars:>100",
+      "sort": "stars"
+    },
+    {
+      "category": "趣味探索",
+      "q": "topic:simulation stars:>100",
+      "sort": "stars"
+    },
+    {
+      "category": "趣味探索",
+      "q": "topic:game stars:>500",
+      "sort": "stars"
+    }
+  ],
+  "deployment_policy": "user_initiated_only",
+  "codex_candidate_min_score": 75,
+  "search_max_pages": 50,
+  "desktop_notifications": true
+}
