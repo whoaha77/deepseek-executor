@@ -227,8 +227,34 @@ class TestHandoffFlow(unittest.TestCase):
             self.assertEqual(fake.count("session/create"), 1)
             self.assertEqual(fake.count("session/prompt"), 1)
             self.assertTrue(result["handoff_id"].startswith("handoff-"))
+            self.assertEqual(manifest['dispatch_mode'],'acknowledge')
+            prompt=next(a['request']['content'][0]['text'] for m,a in fake.calls if m=='session/prompt')
+            self.assertIn('只确认收到交接',prompt)
         finally:
             td.cleanup()
+
+    def test_execute_submits_one_actionable_prompt(self):
+        td,state,ws,task,fake=self._setup()
+        try:
+            with mock.patch.object(dsh,'API',lambda s:fake):
+                result=dsh.handoff(state,ws,task,['a.txt'],'execute',execute=True)
+            manifest=json.loads(Path(result['packet_path']).read_text(encoding='utf-8'))
+            self.assertEqual(manifest['dispatch_mode'],'execute')
+            self.assertEqual(manifest['status'],'submitted')
+            self.assertEqual(fake.count('session/prompt'),1)
+            prompt=next(a['request']['content'][0]['text'] for m,a in fake.calls if m=='session/prompt')
+            self.assertIn('现在直接执行',prompt)
+            self.assertNotIn('只确认收到交接',prompt)
+        finally:td.cleanup()
+
+    def test_execute_rejects_truthy_string_before_remote_mutation(self):
+        td,state,ws,task,fake=self._setup()
+        try:
+            with mock.patch.object(dsh,'API',lambda s:fake):
+                with self.assertRaises(dsh.BridgeError):
+                    dsh.handoff(state,ws,task,['a.txt'],'bad',execute='yes')
+            self.assertEqual(fake.calls,[])
+        finally:td.cleanup()
 
     def test_rejected_prompt_preserves_unknown_or_failed(self):
         td, state, ws, task, fake = self._setup()

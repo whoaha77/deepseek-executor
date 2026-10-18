@@ -54,3 +54,16 @@ python -X utf8 -I bin/dsh_bridge.py return --id <handoff_id>
 `state/dsh/`包含运行时、启动凭据日志和交接原文，只留本机；`home`包含DSH会话与设置。两者都不能上传。公开包仅包含桥接源码、合成测试和文档。
 
 已在作者机器完成两轮记忆对话，以及DSH真实创建/读取测试文件后导出差异的双向验证。测试目录与实际项目分开。没有通过故意耗尽Codex额度测试自动切换，也没有验证断电恢复、所有插件、全部第三方版本或无人监管长任务。
+
+## 直接派任务执行（无需再发第二条）
+
+项目公开包已包含DSH启动器、桥接器与自动限额接力代码，官方DSH运行时另按上文安装，不打包个人home、密钥或聊天。
+
+```powershell
+python -X utf8 -I bin/dsh_start.py
+python -X utf8 -I bin/dsh_bridge.py handoff --workspace . --task examples/dsh-task.md --files work/dsh-result.txt --title "DSH直接任务" --execute
+```
+
+此示例会真实创建work/dsh-result.txt；应在测试目录或明确允许该路径的工作区执行。--execute明确授权立即执行任务文件；不加则兼容原有“仅确认、等待用户在DSH继续”的行为。API的accepted或本机manifest的submitted只表示接收，不表示任务完成；结果仍需本地检查与主脑验收。可在DSH界面继续该会话，完成后使用return --id导出公开交接记录。不要原样重复运行以恢复不明的提交：先检查manifest及会话，防止重复执行。
+
+换成真实任务时，任务文件一次写全目标、输入、允许输出、检查命令、执行截止和异常交回条件；不只要求生成初稿。--execute不覆盖任务明确的离线条件或扩大安装/发布授权，也不自动阻止其他程序同时写原目录。需要隔离副本时使用auto_relay.py装载流程。官方DSH版本与依赖独立安装，本项目当前兼容性实测仍为0.2.0-rc.2，不把模型1017更新等同于Harness已升级。

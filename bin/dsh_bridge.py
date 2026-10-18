@@ -354,7 +354,9 @@ class API:
         return result.get("value")
 
 
-def handoff(state, workspace, task_path, files, title, effort="high"):
+def handoff(state, workspace, task_path, files, title, effort="high", execute=False):
+    if type(execute) is not bool:
+        raise BridgeError("invalid execute mode")
     if effort not in ("off", "low", "high", "max"):
         raise BridgeError("invalid reasoning effort")
     st = Path(state).resolve()
@@ -379,6 +381,7 @@ def handoff(state, workspace, task_path, files, title, effort="high"):
         "task_text": task_text,
         "session_id": session_id,
         "request_id": request_id,
+        "dispatch_mode": "execute" if execute else "acknowledge",
         "status": "preparing",
     }
     write_json(manifest_path, manifest)
@@ -407,12 +410,16 @@ def handoff(state, workspace, task_path, files, title, effort="high"):
             raise BridgeError("model route mismatch")
         api.rpc("session/rename", {"request": {"sessionId": sid, "title": title}})
         declared = "\n".join("- " + f for f in baseline.keys())
-        prompt = (
-            task_text
-            + "\n\n声明路径:\n" + declared
-            + "\n\n只确认收到交接，等待用户在DSH继续对话；此条不调用工具、不读写文件。"
-            "不访问密钥、私人会话、科研原始数据。声明路径不是文件权限沙箱。"
+        action = (
+            "\n\n现在直接执行上述已授权任务，无需再等待第二条消息。完成必要的实现、产物生成、"
+            "本地检查与原范围内常规修复；遇到范围/设计变化或任务截止，保存状态并报告阻塞。"
+            "允许任务所需的公开搜索和GitHub下载至工作区；明确离线任务仍离线。下载不自动授权"
+            "安装、执行未知程序、提权或发布。完成后报告路径、验证结果、未验证范围和待裁决问题。"
+            if execute else
+            "\n\n只确认收到交接，等待用户在DSH继续对话；此条不调用工具、不读写文件。"
         )
+        prompt = (task_text + "\n\n声明路径:\n" + declared + action +
+                  "不访问密钥、私人会话、科研原始数据。声明路径不是文件权限沙箱。")
         _scan_secret(prompt)
         accepted = api.rpc("session/prompt", {"request": {"sessionId": sid, "requestId": request_id, "mode": "queue", "content": [{"type": "text", "text": prompt}], "clientTimeZone": "Asia/Shanghai"}})
         if not isinstance(accepted, dict) or accepted.get("accepted") is not True:
@@ -590,6 +597,7 @@ def _cli():
     h.add_argument("--workspace", required=True)
     h.add_argument("--task", required=True)
     h.add_argument("--files", nargs="+", required=True)
+    h.add_argument("--execute", action="store_true", help="立即执行明确任务；默认只确认接收")
     h.add_argument("--title", default="Codex交接")
     h.add_argument("--effort", choices=("off", "low", "high", "max"), default="high")
     back = sub.add_parser("return")
@@ -603,7 +611,7 @@ def _cli():
                 webbrowser.open(api.launch)
             result = {"base_url": api.base, "status": "ready"}
         elif args.command == "handoff":
-            result = handoff(args.state, args.workspace, args.task, args.files, args.title, args.effort)
+            result = handoff(args.state, args.workspace, args.task, args.files, args.title, args.effort, execute=args.execute)
         else:
             result = return_packet(args.state, args.id)
         print(json.dumps(result, ensure_ascii=False))

@@ -39,7 +39,7 @@ python -I bin/team.py --plan examples/plan.json
 
 需要读取较大 Python 文件或多份历史说明时，可使用 [本地上下文工具](docs/local-context.md)：先符号定位/索引检索，再取必要原文。索引仅收显式指定的 Markdown/TXT，普通小文件直接读取即可。工具不启动后台服务，也不调用模型；原文变化后拒绝使用过期摘录。
 
-需要转到官方 DeepSeek Harness 继续聊天，可安装固定版本运行时后双击 `启动DSH.cmd`，再按 [DSH 对话接力](docs/dsh-relay.md) 创建会话。另提供[显式装载任务的自动限额接力](docs/auto-relay.md)：独立后台查询额度、耗尽后在隔离副本执行、恢复后交回；可选择向原聊天排队通知。已验证模拟额度驱动的真实DSH执行与CLI排队接受，尚未验证真实耗尽后的桌面自动执行。DS不设金额/调用次数硬上限，仍保留接口与可靠性边界。
+需要转到官方 DeepSeek Harness 继续聊天，可安装固定版本运行时后双击 `启动DSH.cmd`，再按 [DSH 对话接力](docs/dsh-relay.md) 创建会话。使用 `handoff --execute` 可直接派发明确任务执行，默认不加此参数则只确认接收。另提供[显式装载任务的自动限额接力](docs/auto-relay.md)：独立后台查询额度、耗尽后在隔离副本执行、恢复后交回；可选择向原聊天排队通知。已验证模拟额度驱动的真实DSH执行与CLI排队接受，尚未验证真实耗尽后的桌面自动执行。DS不设金额/调用次数硬上限，仍保留接口与可靠性边界。
 
 `apps/github-radar/`附带公开GitHub项目发现工具源码、配置样例与离线测试；本地`config.json`不分享。当前样例`daily_budget_cny=null`表示不限金额，费用记录仍保留；使用前配置自己的发布仓库。模型仅Flash，不自动安装发现的项目。
 

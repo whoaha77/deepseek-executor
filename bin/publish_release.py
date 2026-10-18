@@ -108,8 +108,14 @@ asset=api(release['upload_url'].split('{',1)[0]+'?name='+urllib.parse.quote(arch
 record.update(stage='published',download=asset['browser_download_url'],archive_sha256=hashlib.sha256(archive.read_bytes()).hexdigest(),files=len(expected));save()
 if git('status','--porcelain'):raise RuntimeError('checkout not clean')
 # Anonymous reads independently verify public availability and the uploaded asset bytes.
-public=api(f'/repos/{OWNER}/{NAME}/releases/tags/{TAG}',auth=False)
-if public['tag_name']!=TAG:raise RuntimeError('anonymous release mismatch')
+try:
+    public=api(f'/repos/{OWNER}/{NAME}/releases/tags/{TAG}',auth=False)
+except RuntimeError as error:
+    if 'GitHub HTTP 403' not in str(error) or 'API rate limit exceeded' not in str(error):raise
+    public=None
+    record['anonymous_release_api_note']='Anonymous metadata rate limited; full anonymous asset download is still required.'
+record['anonymous_release_api_verified']=public is not None
+if public is not None and public['tag_name']!=TAG:raise RuntimeError('anonymous release mismatch')
 with urllib.request.urlopen(urllib.request.Request(record['download'],headers={'User-Agent':'deepseek-executor-publisher'}),timeout=60) as response:
     downloaded=hashlib.sha256()
     for chunk in iter(lambda:response.read(1024*1024),b''):downloaded.update(chunk)
