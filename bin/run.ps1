@@ -25,6 +25,11 @@ param(
   [string[]]$ToolboxArgumentList,
   [ValidateSet('low', 'high', 'max')][string]$Effort = 'low',
   [string]$Type = 'general',
+  [string]$WriteTarget,
+  [string]$TaskFile,
+  [string[]]$InputFiles,
+  [string]$ReceiptDir,
+  [string]$CheckPlan,
   [switch]$DryRun
 )
 
@@ -34,6 +39,18 @@ try { [Console]::OutputEncoding = $utf8NoBom } catch { }
 
 $Bin = $PSScriptRoot
 $Py = 'python'
+
+# Explicit single-file delivery: no paid heuristic router.
+if ($WriteTarget) {
+  if ($Tier -notin @('auto','text')) { throw 'WriteTarget requires auto/text tier.' }
+  if (-not $TaskFile -or -not $ReceiptDir) { throw 'WriteTarget requires TaskFile and ReceiptDir.' }
+  $deliveryArgs = @('-X','utf8','-I',"$Bin\ds_write.py",'--workspace',$Workspace,'--target',$WriteTarget,'--task',$TaskFile,'--out',$ReceiptDir)
+  if ($InputFiles) { $deliveryArgs += '--inputs'; $deliveryArgs += $InputFiles }
+  if ($CheckPlan) { $deliveryArgs += @('--check-plan',$CheckPlan) }
+  if (-not $DryRun) { $deliveryArgs += '--execute' }
+  & $Py @deliveryArgs
+  exit $LASTEXITCODE
+}
 
 # ---------- 路由判断 ----------
 $decision = $Tier

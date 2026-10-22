@@ -1,10 +1,10 @@
 ---
 name: deepseek-executor
-description: Route deterministic work to local scripts, explicit text to DeepSeek Flash, and bounded file tasks to supervised workers. Use for mechanical delegation; retain main-agent design and final acceptance.
+description: Prefer DeepSeek Flash before substantial new content, new scripts and multi-file implementation; use local deterministic checks and retain main-agent design and final acceptance. Ordinary questions and known small fixes need no extra call.
 ---
 # DeepSeek executor
 
-Engine: `{{ENGINE_ROOT}}`. Flash only. Never transmit keys or raw sensitive data.
+Engine: `{{ENGINE_ROOT}}`. Flash only. Before substantial file generation choose DS: single fully specified file uses ds_write.py; multi-file/tool discovery uses DSH or bounded worker. Direct main edits need a concrete small-fix/T0/data/design/DS-block exception, not speed alone. See [DS-first delivery](references/ds-first.md). Rules are not universal host-tool interception. Never transmit keys or raw sensitive data.
 
 Use T0 local scripts first; T1 ask.py for explicit text, including fully specified new code; T2 only when tools are needed. Main agent chooses the design and verifies results. Ordinary replies do not need delegation.
 
